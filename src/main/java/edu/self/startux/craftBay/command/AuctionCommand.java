@@ -231,7 +231,7 @@ public class AuctionCommand extends AuctionParameters implements CommandExecutor
 
     @SubCommand(perm = "admin", optional = 0)
     public void bankhand(Player player) {
-        ItemStack stack = player.getInventory().getItemInMainHand();
+        ItemStack stack = player.getInventory().getItemInHand();
         if (stack == null || stack.getType() == Material.AIR) return;
         Merchant merchant = BankMerchant.getInstance();
         RealItem item = new RealItem(stack);

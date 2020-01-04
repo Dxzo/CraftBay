@@ -38,6 +38,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
@@ -64,7 +65,7 @@ public class RealItem implements Item {
         this.amount = amount;
         // Questionable check.  Assuming it was for player skull meta.
         // Consider removal (testing needed).
-        if (stack.getType() == Material.PLAYER_HEAD) {
+        if (stack.getType() == Material.SKULL) {
             ItemMeta meta = stack.getItemMeta();
             if (meta instanceof SkullMeta) {
                 SkullMeta skull = (SkullMeta)meta;
@@ -145,12 +146,14 @@ public class RealItem implements Item {
         if (meta instanceof PotionMeta) {
             PotionMeta potions = (PotionMeta)meta;
             try {
-                PotionData data = potions.getBasePotionData();
-                if (data != null && data.getType() != PotionType.UNCRAFTABLE) {
+                // PotionData data = potions.getBasePotionData();
+                Potion potion = Potion.fromItemStack(stack);
+                PotionData potionData = new PotionData(potion.getType());
+                if (potionData != null) {
                     sb.append(" ");
-                    sb.append(niceEnumName(data.getType().name()));
-                    if (data.isExtended()) sb.append(" Ext");
-                    if (data.isUpgraded()) sb.append(" II");
+                    sb.append(niceEnumName(potionData.getType().name()));
+                    if (potionData.isExtended()) sb.append(" Ext");
+                    if (potionData.isUpgraded()) sb.append(" II");
                 }
             } catch (IllegalArgumentException iae) {}
             if (potions.hasCustomEffects()) {
@@ -251,12 +254,14 @@ public class RealItem implements Item {
         if (meta instanceof PotionMeta) {
             PotionMeta potions = (PotionMeta)meta;
             try {
-                PotionData data = potions.getBasePotionData();
-                if (data != null) {
+                // PotionData data = potions.getBasePotionData();
+                Potion potion = Potion.fromItemStack(stack);
+                PotionData potionData = new PotionData(potion.getType()); 
+                if (potionData != null) {
                     if (result.length() > 0) result.append(" ");
-                    result.append(niceEnumName(data.getType().name()));
-                    if (data.isExtended()) result.append(" Ext");
-                    if (data.isUpgraded()) result.append(" II");
+                    result.append(niceEnumName(potionData.getType().name()));
+                    if (potionData.isExtended()) result.append(" Ext");
+                    if (potionData.isUpgraded()) result.append(" II");
                 }
             } catch (IllegalArgumentException iae) {}
             if (potions.hasCustomEffects()) {
@@ -367,7 +372,7 @@ public class RealItem implements Item {
     }
 
     public static String getEnchantmentName(Enchantment enchantment) {
-        return niceEnumName(enchantment.getKey().getKey());
+        return niceEnumName(enchantment.getName());
     }
 
     private String roman(int i) {
